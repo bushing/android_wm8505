@@ -1,0 +1,14 @@
+if ARCH_WMT
+
+menu "Wondermedia Technologies SoCs"
+
+choice
+	prompt "WonderMedia SoCs"
+
+config ARCH_WM8505
+	bool "WM8505"
+	select CPU_ARM920T
+	select GENERIC_TIME
+	select GENERIC_CLOCKEVENTS
+
+endchoice
