@@ -23,6 +23,6 @@
 
 #include <mach/hardware.h>
 
-#define PHYS_OFFSET	(AT91_SDRAM_BASE)
+#define PHYS_OFFSET	(WM8505_DRAM_BASE)
 
 #endif

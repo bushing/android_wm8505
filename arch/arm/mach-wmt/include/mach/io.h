@@ -1,7 +1,5 @@
 /*
- * arch/arm/mach-at91/include/mach/io.h
- *
- *  Copyright (C) 2003 SAN People
+ * arch/arm/mach-wmt/include/mach/io.h
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,24 +23,5 @@
 
 #define __io(a)		__typesafe_io(a)
 #define __mem_pci(a)	(a)
-
-
-#ifndef __ASSEMBLY__
-
-static inline unsigned int at91_sys_read(unsigned int reg_offset)
-{
-	void __iomem *addr = (void __iomem *)AT91_VA_BASE_SYS;
-
-	return __raw_readl(addr + reg_offset);
-}
-
-static inline void at91_sys_write(unsigned int reg_offset, unsigned long value)
-{
-	void __iomem *addr = (void __iomem *)AT91_VA_BASE_SYS;
-
-	__raw_writel(value, addr + reg_offset);
-}
-
-#endif
 
 #endif

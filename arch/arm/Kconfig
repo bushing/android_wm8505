@@ -246,6 +246,13 @@ config ARCH_AT91
 	  This enables support for systems based on the Atmel AT91RM9200,
 	  AT91SAM9 and AT91CAP9 processors.
 
+config ARCH_WMT
+	bool "WonderMedia Technologies WM8505"
+	select GENERIC_GPIO
+	select HAVE_CLK
+	help
+	  This enables support for WMT chips.
+
 config ARCH_CLPS711X
 	bool "Cirrus Logic CLPS711x/EP721x-based"
 	select CPU_ARM720T
@@ -661,6 +668,8 @@ source "arch/arm/mach-aaec2000/Kconfig"
 source "arch/arm/mach-realview/Kconfig"
 
 source "arch/arm/mach-at91/Kconfig"
+
+source "arch/arm/mach-wmt/Kconfig"
 
 source "arch/arm/plat-mxc/Kconfig"
 

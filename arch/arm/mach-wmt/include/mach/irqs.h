@@ -1,7 +1,5 @@
 /*
- * arch/arm/mach-at91/include/mach/irqs.h
- *
- *  Copyright (C) 2004 SAN People
+ * arch/arm/mach-wmt/include/mach/irqs.h
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,27 +20,16 @@
 #define __ASM_ARCH_IRQS_H
 
 #include <linux/io.h>
-#include <mach/at91_aic.h>
-
-#define NR_AIC_IRQS 32
-
 
 /*
  * Acknowledge interrupt with AIC after interrupt has been handled.
  *   (by kernel/irq.c)
  */
-#define irq_finish(irq) do { at91_sys_write(AT91_AIC_EOICR, 0); } while (0)
+#define irq_finish(irq) do { } while (0)
 
-
-/*
- * IRQ interrupt symbols are the AT91xxx_ID_* symbols
- * for IRQs handled directly through the AIC, or else the AT91_PIN_*
- * symbols in gpio.h for ones handled indirectly as GPIOs.
- * We make provision for 5 banks of GPIO.
- */
-#define	NR_IRQS		(NR_AIC_IRQS + (5 * 32))
+#define	NR_IRQS		64 // ?
 
 /* FIQ is AIC source 0. */
-#define FIQ_START AT91_ID_FIQ
+//#define FIQ_START AT91_ID_FIQ
 
 #endif

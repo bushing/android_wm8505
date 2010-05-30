@@ -12,3 +12,5 @@ config ARCH_WM8505
 	select GENERIC_CLOCKEVENTS
 
 endchoice
+endmenu
+endif
