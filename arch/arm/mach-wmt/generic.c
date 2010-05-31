@@ -24,14 +24,30 @@
 
 #include <asm/errno.h>
 #include <asm/delay.h>
+#include <asm/mach/arch.h>
+#include <asm/mach-types.h>
+#include <asm/mach/time.h>
 #include <mach/hardware.h>
 
 #include <asm/mach/map.h>
 #include <mach/gpio.h>
 
-#define write16(a,v)        (*(volatile unsigned short *)(a) = (v))
-#define write32(a,v)        (*(volatile unsigned int   *)(a) = (v))
-#define read32(a)        (*(volatile unsigned int   *)(a))
+static inline u32 read32(u32 addr)
+{
+  u32 data;
+  __asm__ volatile ("ldr\t%0, [%1]" : "=l" (data) : "l" (addr));
+  return data;
+}
+
+static inline void write32(u32 addr, u32 data)
+{
+  __asm__ volatile ("str\t%0, [%1]" : : "l" (data), "l" (addr));
+}
+
+static inline void write16(u32 addr, u16 data)
+{
+  __asm__ volatile ("strh\t%0, [%1]" : : "l" (data), "l" (addr));
+}
 
 static struct resource uart0_resources[] = {
   [0] = {
@@ -330,3 +346,55 @@ static int __init wmt_init(void)
 }
 
 subsys_initcall(wmt_init);
+
+static void __init wmt_fixup(struct machine_desc *desc,
+				   struct tag *tag, char **ptr,
+				   struct meminfo *foo)
+{
+  /* this space intentionally left blank */
+}
+
+static void wmt_map_io(void)
+{
+  printk(KERN_ERR "wmt_map_io\n");
+}
+
+static void __init wmt_timer_init(void)
+{
+  printk(KERN_ERR "wmt_timer_init\n");
+  write32(0xD8130120, 0);
+  write32(0xD810000C, 9);
+  while ((read32(0xD8100028) & 1) == 0) ;
+  write32(0xD8100008, 0);
+  write32(0xD810001C, 0);
+  if (!read32(0xD8100014)) {
+    while (read32(0xD8100018) & 2) ;
+  }
+  write32(0xD810000C, 9);
+  while (read32(0xD8100018) & 8) ;
+  /* ...... */
+}
+
+/*
+static unsigned long wmt_gettimeoffset (void)
+{
+  return 0;
+}
+*/
+
+
+struct sys_timer wmt_timer = {
+  .init           = wmt_timer_init,
+//  .offset         = wmt_gettimeoffset
+};
+
+void __init wmt_init_irq(void);
+
+MACHINE_START(NTNP425C /* [sic] */, "WMT")
+.phys_io = 0xD8000000,
+  .io_pg_offst = 0x3600,
+  .fixup = wmt_fixup,
+  .map_io = wmt_map_io,
+  .init_irq = wmt_init_irq,
+  .timer = &wmt_timer,
+MACHINE_END

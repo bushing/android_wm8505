@@ -113,8 +113,9 @@ static struct sys_device wmt_irq_device = {
 
 static int __init wmt_irq_device_init(void)
 {
-	sysdev_class_register(&wmt_irq_sysclass);
-	return sysdev_register(&wmt_irq_device);
+  printk(KERN_ERR "wmt_irq_device_init\n");
+  sysdev_class_register(&wmt_irq_sysclass);
+  return sysdev_register(&wmt_irq_device);
 }
 
 device_initcall(wmt_irq_device_init);
@@ -134,9 +135,9 @@ static unsigned short irq_table[] = {
 
 void __init wmt_init_irq(void)
 {
-	unsigned int irq;
-
-	request_resource(&iomem_resource, &irq_resource);
-
-	/* do stuff */
+  unsigned int irq;
+  printk(KERN_ERR "wmt_init_irq\n");
+  request_resource(&iomem_resource, &irq_resource);
+  
+  /* do stuff */
 }
