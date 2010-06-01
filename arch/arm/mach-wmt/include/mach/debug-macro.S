@@ -1,7 +1,5 @@
 /*
- * arch/arm/mach-at91/include/mach/debug-macro.S
- *
- *  Copyright (C) 2003-2005 SAN People
+ * arch/arm/mach-wmt/include/mach/debug-macro.S
  *
  * Debugging macro include header
  *
@@ -12,28 +10,22 @@
 */
 
 #include <mach/hardware.h>
-#include <mach/at91_dbgu.h>
-
+	
 	.macro	addruart,rx
-	mrc	p15, 0, \rx, c1, c0
-	tst	\rx, #1						@ MMU enabled?
-	ldreq	\rx, =(AT91_BASE_SYS + AT91_DBGU)		@ System peripherals (phys address)
-	ldrne	\rx, =(AT91_VA_BASE_SYS	+ AT91_DBGU)		@ System peripherals (virt address)
+	ldr \rx, =(WM8505_UART0_BASE)
 	.endm
 
+	
 	.macro	senduart,rd,rx
-	strb	\rd, [\rx, #(AT91_DBGU_THR - AT91_DBGU)]	@ Write to Transmitter Holding Register
+	strb	\rd, [\rx]	@ Write to Transmitter Holding Register
 	.endm
 
 	.macro	waituart,rd,rx
-1001:	ldr	\rd, [\rx, #(AT91_DBGU_SR - AT91_DBGU)]		@ Read Status Register
-	tst	\rd, #AT91_DBGU_TXRDY				@ DBGU_TXRDY = 1 when ready to transmit
-	beq	1001b
+1001:	ldr	\rd, [\rx, #0x1C]		@ Read Status Register
+	tst	\rd, #2				                @ URUSR & 2 = 0 when ready to transmit
+	bne	1001b
 	.endm
 
-	.macro	busyuart,rd,rx
-1001:	ldr	\rd, [\rx, #(AT91_DBGU_SR - AT91_DBGU)]		@ Read Status Register
-	tst	\rd, #AT91_DBGU_TXEMPTY				@ DBGU_TXEMPTY = 1 when transmission complete
-	beq	1001b
+	.macro busyuart,rd,rx
 	.endm
-
+	

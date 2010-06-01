@@ -14,5 +14,6 @@
 #include <asm/sizes.h>
 
 #define WM8505_DRAM_BASE 0
+#define WM8505_UART0_BASE 0xD8200000
 
 #endif
