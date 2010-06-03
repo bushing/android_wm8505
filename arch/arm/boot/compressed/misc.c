@@ -69,6 +69,14 @@ static void icedcc_putc(int ch)
 #define flush()	do { } while (0)
 #endif
 
+void puthex(unsigned int num) {
+  static char hexnums[]="0123456789abcdef";
+  int i;
+
+  for (i=7; i>=0; i--)
+    putc(hexnums[(num >> (4*i)) & 0xF]);
+}
+
 static void putstr(const char *ptr)
 {
 	char c;
@@ -241,8 +249,13 @@ static ulg free_mem_end_ptr;
 
 #define ARCH_HAS_DECOMP_WDOG
 
+#undef Tracecv()
+#undef Tracevv()
+#define Tracecv(c,x)
+#define Tracevv(x)
+#undef DEBUG
 #include "../../../../lib/inflate.c"
-
+#define DEBUG
 /* ===========================================================================
  * Fill the input buffer. This is called only when the buffer is empty
  * and at least one byte is really needed.
@@ -308,10 +321,20 @@ decompress_kernel(ulg output_start, ulg free_mem_ptr_p, ulg free_mem_ptr_end_p,
 	free_mem_end_ptr	= free_mem_ptr_end_p;
 	__machine_arch_type	= arch_id;
 
+	putstr("Herro!\n");
 	arch_decomp_setup();
 
 	makecrc();
 	putstr("Uncompressing Linux...");
+	putstr("output_start = ");
+	puthex(output_start);
+	putstr("\nfree_mem_ptr_p = ");
+	puthex(free_mem_ptr_p);
+	putstr("\nfree_mem_ptr_end_p = ");
+	puthex(free_mem_ptr_end_p);
+	putstr("\narch_id = ");
+	puthex(arch_id);
+	putstr("\n");
 	gunzip();
 	putstr(" done, booting the kernel.\n");
 	return output_ptr;

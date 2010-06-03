@@ -1,5 +1,13 @@
+#ifdef ARCH_HAS_DECOMP_WDOG
+#define DEBG(x) putstr(x)
+#define DEBG1(x) putstr(x)
+#define NOMEMCPY
+#else
 #define DEBG(x)
 #define DEBG1(x)
+#define puthex(x)
+#endif
+
 /* inflate.c -- Not copyrighted 1992 by Mark Adler
    version c10p1, 10 January 1993 */
 
@@ -622,6 +630,8 @@ STATIC int INIT inflate_codes(
     DUMPBITS(t->b)
     if (e == 16)                /* then it's a literal */
     {
+      DEBG("x");
+      puthex((unsigned int)&slide[w]);
       slide[w++] = (uch)t->v.n;
       Tracevv((stderr, "%c", slide[w-1]));
       if (w == WSIZE)
@@ -670,6 +680,8 @@ STATIC int INIT inflate_codes(
         else                      /* do it slow to avoid memcpy() overlap */
 #endif /* !NOMEMCPY */
           do {
+	    DEBG("y");
+	    puthex((unsigned int)&slide[w]);
             slide[w++] = slide[d++];
 	    Tracevv((stderr, "%c", slide[w-1]));
           } while (--e);

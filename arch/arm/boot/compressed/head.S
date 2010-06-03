@@ -9,7 +9,7 @@
  * published by the Free Software Foundation.
  */
 #include <linux/linkage.h>
-
+#define DEBUG
 /*
  * Debugging stuff
  *
@@ -154,6 +154,14 @@ not_angel:
 		 */
 
 		.text
+	mov r0, #'O'
+	bl putc
+	mov r0, #'H'
+	bl putc
+	mov r0, #'A'
+	bl putc
+	mov r0, #'I'
+	bl putc
 		adr	r0, LC0
 		ldmia	r0, {r1, r2, r3, r4, r5, r6, ip, sp}
 		subs	r0, r0, r1		@ calculate the delta offset
@@ -215,14 +223,18 @@ not_relocated:	mov	r0, #0
 		str	r0, [r2], #4
 		cmp	r2, r3
 		blo	1b
+	mov r0, #'2'
+	bl putc
 
 		/*
 		 * The C runtime environment should now be setup
 		 * sufficiently.  Turn the cache on, set up some
 		 * pointers, and start decompressing.
 		 */
-		bl	cache_on
+//		bl	cache_on
 
+	mov r0, #'3'
+	bl putc
 		mov	r1, sp			@ malloc space above stack
 		add	r2, sp, #0x10000	@ 64k max
 
@@ -242,6 +254,8 @@ not_relocated:	mov	r0, #0
 		cmp	r0, r5
 		bls	wont_overwrite
 
+	mov r0, #'6'
+	bl putc
 		mov	r5, r2			@ decompress after malloc space
 		mov	r0, r5
 		mov	r3, r7
@@ -280,9 +294,12 @@ not_relocated:	mov	r0, #0
  * r4     = kernel execution address
  * r7     = architecture ID
  */
-wont_overwrite:	mov	r0, r4
+wont_overwrite: mov	r0, r4
 		mov	r3, r7
 		bl	decompress_kernel
+		mov r0, #'5'
+	bl putc
+
 		b	call_kernel
 
 		.type	LC0, #object
@@ -535,13 +552,23 @@ call_kernel:	bl	cache_clean_flush
  *  r12 = corrupted
  */
 
-call_cache_fn:	adr	r12, proc_types
+call_cache_fn:
+	mov r0, #'a'
+	bl putc
+
+	adr	r12, proc_types
 #ifdef CONFIG_CPU_CP15
 		mrc	p15, 0, r6, c0, c0	@ get processor ID
-#else
+	mov r0, r6
+	mov	r1, #8
+	bl	phex
+
+	#else
 		ldr	r6, =CONFIG_PROCESSOR_ID
 #endif
-1:		ldr	r1, [r12, #0]		@ get value
+1:	mov r0, #'x'
+	bl putc
+	ldr	r1, [r12, #0]		@ get value
 		ldr	r2, [r12, #4]		@ get mask
 		eor	r1, r1, r6		@ (real ^ match)
 		tst	r1, r2			@       & mask

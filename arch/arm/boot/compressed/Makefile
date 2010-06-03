@@ -71,7 +71,7 @@ ORIG_CFLAGS := $(KBUILD_CFLAGS)
 KBUILD_CFLAGS = $(subst -pg, , $(ORIG_CFLAGS))
 endif
 
-EXTRA_CFLAGS  := -fpic -fno-builtin
+EXTRA_CFLAGS  := -fpic -fno-builtin -DDEBUG
 EXTRA_AFLAGS  := -Wa,-march=all
 
 # Supply ZRELADDR, INITRD_PHYS and PARAMS_PHYS to the decompressor via
